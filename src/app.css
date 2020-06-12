@@ -3,3 +3,11 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
 }
+
+.card {
+
+    object-fit: cover;
+}
+.card-img-top {
+    max-height: 200px;
+}
