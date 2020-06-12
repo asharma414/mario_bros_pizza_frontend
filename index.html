@@ -24,7 +24,7 @@
                         <div class="nav-link" id='specials'>Specials</div>
                     </li>
                     <li class="nav-item">
-                        <div class="nav-link" id='login' data-target='#loginModal' data-toggle='modal'>Login/Register</div>
+                        <div class="nav-link" id='login' data-target='#loginModal' data-toggle='modal'>Login</div>
                     </li>
                 </ul>
             </div>
@@ -49,11 +49,11 @@
                         <form id="customer-login-form-modal">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Username</label>
-                                <input type="text" class="form-control" id="customer-username" aria-describedby="username" placeholder="princess.peach">
+                                <input type="text" class="form-control" id="customer-username" name='username' aria-describedby="username" placeholder="princess.peach">
 
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary" data-target='#loginModal' data-toggle='modal'>Submit</button>
                         </form>
                     </div>
                     <div class="modal-footer">

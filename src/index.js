@@ -5,6 +5,7 @@ const containerDiv = () => document.querySelector('.container')
 const pageBodyDiv = () => document.querySelector("#pageBody")
 const homeLinkDiv = () => document.querySelector("#home-link")
 const loginForm = () => document.querySelector('#customer-login-form-modal')
+let currentUser;
 
 const baseURL = "http://localhost:3000"
 const specialsURL = `${baseURL}/pizzas`
@@ -24,7 +25,32 @@ const renderHome = () => {
 const handleLogin = (e) => {
     e.preventDefault()
     inactivateNavItems()
-    console.log("HELLO WORLD!")
+    if (!currentUser) {
+    fetch(`${baseURL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+            username: e.target.username.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error)
+        }
+        else {
+            currentUser = data
+            loginDiv().innerText = 'Logout'
+            loginDiv().removeAttribute('data-target')
+            loginDiv().removeAttribute('data-toggle')
+        }
+    })
+    } else {
+        currentUser = null;
+        loginDiv().innerText = 'Login'
+        loginDiv().setAttribute('data-target', '#loginModal')
+        loginDiv().setAttribute('data-toggle', 'modal')
+    }
     //fetch(customers)
     //pageBodyDiv().innerHTML = ''
     //e.target.parentNode.classList.add('active')
