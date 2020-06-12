@@ -4,6 +4,7 @@ const loginDiv = () => document.querySelector('#login')
 const containerDiv = () => document.querySelector('.container')
 const pageBodyDiv = () => document.querySelector("#pageBody")
 const homeLinkDiv = () => document.querySelector("#home-link")
+const loginForm = () => document.querySelector('#customer-login-form-modal')
 
 const baseURL = "http://localhost:3000"
 const specialsURL = `${baseURL}/pizzas`
@@ -11,19 +12,28 @@ const specialsURL = `${baseURL}/pizzas`
 document.addEventListener('DOMContentLoaded', () => {
     mtoDiv().addEventListener('click', renderMTO)
     specialsDiv().addEventListener('click', renderSpecials)
-    loginDiv().addEventListener('click', renderLogin)
+    loginForm().addEventListener('submit', handleLogin)
     homeLinkDiv().addEventListener('click', renderHome)
+
 })
 
 const renderHome = () => {
 
 }
 
-const renderLogin = (e) => {
+const handleLogin = (e) => {
+    e.preventDefault()
     inactivateNavItems()
-    pageBodyDiv().innerHTML = ''
-    e.target.parentNode.classList.add('active')
+    console.log("HELLO WORLD!")
+    //fetch(customers)
+    //pageBodyDiv().innerHTML = ''
+    //e.target.parentNode.classList.add('active')
 }
+
+// <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+// Launch demo modal
+// </button>
+
 
 const renderMTO = (e) => {
     inactivateNavItems()
@@ -32,8 +42,8 @@ const renderMTO = (e) => {
 }
 
 const renderSpecials = (e) => {
-    inactivateNavItems()
     if (!document.querySelector('.specials')) {
+        inactivateNavItems()
         pageBodyDiv().innerHTML = ''
         fetch(specialsURL)
         .then(r => r.json())
