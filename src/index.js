@@ -5,7 +5,7 @@ const containerDiv = () => document.querySelector('.container')
 const pageBodyDiv = () => document.querySelector("#pageBody")
 const homeLinkDiv = () => document.querySelector("#home-link")
 
-const baseURL = "http://localhost:3000/"
+const baseURL = "http://localhost:3000"
 const specialsURL = `${baseURL}/pizzas`
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,25 +15,44 @@ document.addEventListener('DOMContentLoaded', () => {
     homeLinkDiv().addEventListener('click', renderHome)
 })
 
-const renderHome =() => {
+const renderHome = () => {
 
 }
 
-const renderMTO = () => {
+const renderLogin = (e) => {
+    inactivateNavItems()
+    pageBodyDiv().innerHTML = ''
+    e.target.parentNode.classList.add('active')
+}
 
+const renderMTO = (e) => {
+    inactivateNavItems()
+    pageBodyDiv().innerHTML = ''
+    e.target.parentNode.classList.add('active')
 }
 
 const renderSpecials = (e) => {
-    if e.target.className
-    fetch(specialsURL)
-    .then(r => r.json())
-    .then(specialsAry => {
-        let rowDiv = document.createElement('div')
-        rowDiv.className = 'row mt-5'
-        pageBodyDiv().appendChild(rowDiv)
-        specialsAry.forEach(renderSpecialCard)} )
-    .then(() => {})
+    inactivateNavItems()
+    if (!document.querySelector('.specials')) {
+        pageBodyDiv().innerHTML = ''
+        fetch(specialsURL)
+        .then(r => r.json())
+        .then(specialsAry => {
+            let rowDiv = document.createElement('div')
+            rowDiv.className = 'row specials mt-5'
+            pageBodyDiv().appendChild(rowDiv)
+            specialsAry.forEach(renderSpecialCard)} )
+        .then(() => {
+            e.target.parentNode.classList.add('active')
+        })
+    }
+}
 
+
+const inactivateNavItems = () => {
+    document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.className = 'nav-item'
+    })
 }
 
 const renderSpecialCard = (spc) =>  {
@@ -71,10 +90,4 @@ const renderSpecialCard = (spc) =>  {
 const handleSpecialBuyButton = (e, pz) => {
     alert(`Thanks for your purchase of ${pz.name}! It will cost $${pz.price}`)
     //TODO make this legit
-}
-
-
-
-const renderLogin = () => {
-
 }
