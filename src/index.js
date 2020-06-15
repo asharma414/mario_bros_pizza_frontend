@@ -25,11 +25,24 @@ document.addEventListener('DOMContentLoaded', () => {
     addMeatChecks()
     addVeggieChecks()
     orderForm().addEventListener('submit', handleOrder)
+    orderForm().addEventListener('change', updatePrice)
     //['Veggie', 'Cheese', 'Sauce', 'Meet'].forEach(addChecks)
     //addChecks("Veggie")
 
     retrieveIngredientPrices()
 })
+
+
+const updatePrice = (e) => {
+    let priceEl = document.getElementById('price')  
+    let price = todaysPrices[1][e.currentTarget.size.value]
+    let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
+    let nodeArr = [...nodeList].map(ingredient => ingredient.dataset.category)
+    nodeArr.forEach(ing => {
+        price += todaysPrices[0][ing]
+    })
+    priceEl.innerText = price.toFixed(2)
+}
 
 function retrieveIngredientPrices() {
     fetch(`${ingredients}/prices`)
@@ -75,7 +88,8 @@ function addCheeseChecks() {
                 inputElement.className = "form-check-input"
                 labelElement.className = 'form-check-label'
                 inputElement.type = "checkbox"
-                inputElement.id = `chzId-${cheese.name}`
+                inputElement.id = `chzId-${cheese.id}`
+                inputElement.setAttribute('data-category', 'cheese')
                 labelElement.htmlFor = `chzId-${cheese.name}`
                 labelElement.innerText = cheese.name
                 inputElement.value = `${cheese.id}`
@@ -100,7 +114,8 @@ function addSauceChecks() {
                 inputElement.className = "form-check-input"
                 labelElement.className = 'form-check-label'
                 inputElement.type = "checkbox"
-                inputElement.id = `sauceId-${sauce.name}`
+                inputElement.id = `sauceId-${sauce.id}`
+                inputElement.setAttribute('data-category', 'sauce')
                 labelElement.htmlFor = `sauceId-${sauce.name}`
                 labelElement.innerText = sauce.name
                 inputElement.value = `${sauce.id}`
@@ -125,7 +140,8 @@ function addMeatChecks() {
                 inputElement.className = "form-check-input"
                 labelElement.className = 'form-check-label'
                 inputElement.type = "checkbox"
-                inputElement.id = `meatId-${meat.name}`
+                inputElement.setAttribute('data-category', 'meat')
+                inputElement.id = `meatId-${meat.id}`
                 labelElement.htmlFor = `meatId-${meat.name}`
                 labelElement.innerText = meat.name
                 inputElement.value = `${meat.id}`
@@ -150,7 +166,8 @@ function addVeggieChecks() {
                 inputElement.className = "form-check-input"
                 labelElement.className = 'form-check-label'
                 inputElement.type = "checkbox"
-                inputElement.id = `veggieId-${veggie.name}`
+                inputElement.id = `veggieId-${veggie.id}`
+                inputElement.setAttribute('data-category', 'veggie')
                 labelElement.htmlFor = `veggieId-${veggie.name}`
                 labelElement.innerText = veggie.name
                 inputElement.value = `${veggie.id}`
