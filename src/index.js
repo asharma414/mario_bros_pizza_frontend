@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 const updatePrice = (e) => {
-    let priceEl = document.getElementById('price')  
+    let priceEl = document.getElementById('price')
     let price = todaysPrices[1][e.currentTarget.size.value]
     let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
     let nodeArr = [...nodeList].map(ingredient => ingredient.dataset.category)
@@ -46,8 +46,8 @@ const updatePrice = (e) => {
 
 function retrieveIngredientPrices() {
     fetch(`${ingredients}/prices`)
-    .then(r => r.json())
-    .then(data => todaysPrices = data)
+        .then(r => r.json())
+        .then(data => todaysPrices = data)
 }
 
 function handleOrder(e) {
@@ -65,11 +65,24 @@ function handleOrder(e) {
 
     fetch(orderURL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json'},
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(body)
     })
-    .then(res => res.json())
-    .then(console.log)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            orderForm().reset()
+            renderOrderDetails()
+        })
+}
+
+const renderOrderDetails = () => {
+    pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
+    <h1 class="display-4">Thank you ${currentUser.name}!</h1>
+    <p class="lead">A pizza takes 25 minutes to prepare and bake.</p>
+    <hr class="my-4 bg-white">
+    <p>It will be delivered to your address at ${currentUser.address}</p>
+  </div>`
 }
 
 
@@ -240,9 +253,23 @@ const renderSpecials = (e) => {
         fetch(specialsURL)
             .then(r => r.json())
             .then(specialsAry => {
-                let rowDiv = document.createElement('div')
-                rowDiv.className = 'row specials mt-5'
-                pageBodyDiv().appendChild(rowDiv)
+                pageBodyDiv().innerHTML = `<div id="specialsCarousel" class="carousel slide mt-4" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#specialsCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#specialsCarousel" data-slide-to="1"></li>
+                        <li data-target="#specialsCarousel" data-slide-to="2"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                    </div>
+                    <a class="carousel-control-prev" href="#specialsCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#specialsCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                    </div>`
                 specialsAry.forEach(renderSpecialCard)
             })
             .then(() => {
@@ -259,38 +286,29 @@ const inactivateNavItems = () => {
 }
 
 const renderSpecialCard = (spc) => {
-    //console.log(spc)
-    //we need a div class=row
-    //then we append to the row 3 divs, 1 for each card
-    let colDiv = document.createElement('div')
-    colDiv.className = 'col-sm-4'
+    let carousel = document.getElementById('specialsCarousel')
+    let inner = document.querySelector('.carousel-inner')
 
-    let cardBodyDiv = document.createElement("div")
-    let cardDiv = document.createElement("div")
-    cardDiv.className = 'card'
+    let item = document.createElement('div')
+    item.className = 'carousel-item'
 
-    let image = document.createElement("img")
-    image.className = 'card-img-top'
-    image.src = spc.pic
-    image.alt = spc.name
+    let img = document.createElement('img')
+    img.src = spc.pic
 
-    let smallHeader = document.createElement("h5")
-    smallHeader.className = 'card-title'
-    smallHeader.innerText = spc.name
+    let caption = document.createElement('div')
+    caption.className = "carousel-caption d-none d-md-block"
 
-    let buyButton = document.createElement("button")
-    buyButton.className = 'btn btn-primary'
-    buyButton.innerText = "Order"
-    buyButton.addEventListener('click', (e) => handleSpecialBuyButton(e, spc))
+    let h5 = document.createElement('h5')
+    h5.innerText = spc.name
+    item.append(img, caption, h5)
+    inner.appendChild(item)
 
-    cardBodyDiv.append(smallHeader, buyButton)
-    cardDiv.append(image, cardBodyDiv)
-    colDiv.appendChild(cardDiv)
-    pageBodyDiv().querySelector(".row").appendChild(colDiv)
+    inner.querySelector('.carousel-item').classList.add('active')
+    carousel.setAttribute("data-interval", 3000)
 
 }
 
 const handleSpecialBuyButton = (e, pz) => {
-    alert(`Thanks for your purchase of ${pz.name}! It will cost $${pz.price}`)
-    //TODO make this legit
-}
+                    alert(`Thanks for your purchase of ${pz.name}! It will cost $${pz.price}`)
+                    //TODO make this legit
+                }
