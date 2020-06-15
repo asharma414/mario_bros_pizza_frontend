@@ -12,6 +12,7 @@ const baseURL = "http://localhost:3000"
 const specialsURL = `${baseURL}/pizzas`
 const ingredients = `${baseURL}/ingredients`
 const orderURL = `${baseURL}/orders`
+let todaysPrices;
 
 document.addEventListener('DOMContentLoaded', () => {
     mtoDiv().addEventListener('click', renderMTO)
@@ -26,9 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
     orderForm().addEventListener('submit', handleOrder)
     //['Veggie', 'Cheese', 'Sauce', 'Meet'].forEach(addChecks)
     //addChecks("Veggie")
+
+    retrieveIngredientPrices()
 })
 
-
+function retrieveIngredientPrices() {
+    fetch(`${ingredients}/prices`)
+    .then(r => r.json())
+    .then(data => todaysPrices = data)
+}
 
 function handleOrder(e) {
     let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
