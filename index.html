@@ -1,24 +1,35 @@
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Mario Bros Pizza</title>
     <link rel='stylesheet' href='src/app.css'>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
 </head>
+
 <body>
     <div class='container'>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="navbar-brand" id="home-link">Mario Bros Pizza</div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <div class="nav-link" id='mto' data-target='#pizzaOrderModal' data-toggle='modal'>Build Your Own</div>
+                        <div class="nav-link" id='mto' data-target='#pizzaOrderModal' data-toggle='modal'>Build Your Own
+                        </div>
                     </li>
                     <li class="nav-item">
                         <div class="nav-link" id='specials'>Specials</div>
@@ -35,38 +46,53 @@
 
     </div>
 
-    <div class="modal fade" id="pizzaOrderModal" tabindex="-1" role="dialog" aria-labelledby="pizzaOrderModalLabel" aria-hidden="true">
+    <div class="modal fade" id="pizzaOrderModal" tabindex="-1" role="dialog" aria-labelledby="pizzaOrderModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content bg-dark">
-                <form id="pizza-order-form">
-                    <div class="form-group">
-                        <label for="pizzaSizeFormSelect">What size?</label>
-                        <select class="form-control" id="pizzaSizeFormSelect">
-                            <option>small</option>
-                            <option>medium</option>
-                            <option>large</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="pizzaCutFormSelect">What cut?</label>
-                        <select class="form-control" id="pizzaCutFormSelect">
-                            <option>square</option>
-                            <option>normal</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="pizzaBakeFormSelect">How should we bake your pizza?</label>
-                        <select class="form-control" id="pizzaBakeFormSelect">
-                            <option>normal</option>
-                            <option>well done</option>
-                        </select>
-                    </div>
-                    <div id="sauce-category"></div>
-                    <div id="cheese-category"></div>
-                    <div id="meat-category"></div>
-                    <div id="veggie-category"></div>
-                    <button type='submit' class="btn btn-primary mb-2">Place custom order </button>
-                </form>
+                <div class="modal-header">
+                    <h5 class="modal-title text-light" id="exampleModalLabel">Customize Your Order!</h5>
+                    <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-light">
+                    <form id="pizza-order-form">
+                        <div class="form-group">
+                            <label for="pizzaSizeFormSelect">What size?</label>
+                            <select class="form-control" id="pizzaSizeFormSelect" name='size'>
+                                <option>small</option>
+                                <option>medium</option>
+                                <option>large</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pizzaCutFormSelect">What cut?</label>
+                            <select class="form-control" id="pizzaCutFormSelect" name='cut'>
+                                <option>square</option>
+                                <option>normal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pizzaBakeFormSelect">How should we bake your pizza?</label>
+                            <select class="form-control" id="pizzaBakeFormSelect" name='bake'>
+                                <option>normal</option>
+                                <option>well done</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="sauce-category" name='sauce'></div>
+                        <div class="form-group" id="cheese-category" name='cheese'></div>
+                        <div class="form-group" id="meat-category" name='meat'></div>
+                        <div class="form-group" id="veggie-category" name='veggie'></div>
+                        <div class="form-group">
+                            <label for="deliveryInstructions">Delivery Instructions</label>
+                            <textarea class="form-control" rows="5" id="deliveryInstructions" name='deliveryInstructions'></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type='submit' class="btn btn-primary mb-2">Place custom order</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -75,7 +101,8 @@
 
 
     <div>
-        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content bg-dark">
                     <div class="modal-header">
@@ -88,13 +115,13 @@
                         <form id="customer-login-form-modal">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Username</label>
-                                <input type="text" class="form-control" id="customer-username" name='username' aria-describedby="username" placeholder="princess.peach">
+                                <input type="text" class="form-control" id="customer-username" name='username'
+                                    aria-describedby="username" placeholder="princess.peach">
                             </div>
-                            <button type="submit" class="btn btn-primary" data-target='#loginModal' data-toggle='modal'>Submit</button>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" data-target='#loginModal' data-toggle='modal'>Submit</button>
+                            </div>
                         </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -103,4 +130,5 @@
 
     <script src='src/index.js'></script>
 </body>
+
 </html>
