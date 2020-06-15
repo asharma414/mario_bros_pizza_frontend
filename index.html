@@ -36,6 +36,41 @@
     </div>
 
     <div>
+        <form id="pizza-order-form">
+            <div class="form-group">
+                <label for="pizzaSizeFormSelect">What size?</label>
+                <select class="form-control" id="pizzaSizeFormSelect">
+                    <option>small</option>
+                    <option>medium</option>
+                    <option>large</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="pizzaCutFormSelect">What cut?</label>
+                <select class="form-control" id="pizzaCutFormSelect">
+                    <option>square</option>
+                    <option>normal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="pizzaBakeFormSelect">How should we bake your pizza?</label>
+                <select class="form-control" id="pizzaBakeFormSelect">
+                    <option>normal</option>
+                    <option>well done</option>
+                </select>
+            </div>
+            <div id="sauce-category"></div>
+            <div id="cheese-category"></div>
+            <div id="meat-category"></div>
+            <div id="veggie-category"></div>
+            <button type='submit' class="btn btn-primary mb-2">Place custom order </button>
+        </form>
+    </div>
+
+
+
+
+    <div>
         <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content bg-dark">

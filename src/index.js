@@ -5,10 +5,12 @@ const containerDiv = () => document.querySelector('.container')
 const pageBodyDiv = () => document.querySelector("#pageBody")
 const homeLinkDiv = () => document.querySelector("#home-link")
 const loginForm = () => document.querySelector('#customer-login-form-modal')
+const orderForm = () => document.querySelector('#pizza-order-form')
 let currentUser;
 
 const baseURL = "http://localhost:3000"
 const specialsURL = `${baseURL}/pizzas`
+const ingredients = `${baseURL}/ingredients`
 
 document.addEventListener('DOMContentLoaded', () => {
     mtoDiv().addEventListener('click', renderMTO)
@@ -16,7 +18,116 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm().addEventListener('submit', handleLogin)
     homeLinkDiv().addEventListener('click', renderHome)
 
+    addCheeseChecks()
+    addSauceChecks()
+    addMeatChecks()
+    addVeggieChecks()
+    orderForm().addEventListener('submit', handleOrder)
+    //['Veggie', 'Cheese', 'Sauce', 'Meet'].forEach(addChecks)
+    //addChecks("Veggie")
 })
+
+function handleOrder(e) {
+    e.preventDefault()
+    alert("hello, i am an order.")
+}
+
+
+function addCheeseChecks() {
+    let cheeseForm = document.querySelector("#cheese-category")
+
+    fetch(ingredients)
+    .then(r => r.json())
+    .then(ingredientAry => ingredientAry.filter( i => i.category == 'cheese' ))
+    .then(cheeseAry => { cheeseAry.forEach( (cheese) => {
+        let divElement = document.createElement("div")
+        let inputElement = document.createElement("input")
+        let labelElement = document.createElement("label")
+        divElement.className = "form-check form-check-inline"
+        inputElement.className = "form-check-input"
+        labelElement.className = 'form-check-label'
+        inputElement.type = "checkbox"
+        inputElement.id = `chzId-${cheese.name}`
+        labelElement.htmlFor = `chzId-${cheese.name}`
+        labelElement.innerText = cheese.name
+        inputElement.value = `${cheese.id}`
+        divElement.append(inputElement, labelElement)
+        cheeseForm.append(divElement)
+    })})
+}
+
+function addSauceChecks() {
+    let sauceForm = document.querySelector("#sauce-category")
+
+    fetch(ingredients)
+    .then(r => r.json())
+    .then(ingredientAry => ingredientAry.filter( i => i.category == 'sauce' ))
+    .then(sauceAry => { sauceAry.forEach( (sauce) => {
+        let divElement = document.createElement("div")
+        let inputElement = document.createElement("input")
+        let labelElement = document.createElement("label")
+        divElement.className = "form-check form-check-inline"
+        inputElement.className = "form-check-input"
+        labelElement.className = 'form-check-label'
+        inputElement.type = "checkbox"
+        inputElement.id = `sauceId-${sauce.name}`
+        labelElement.htmlFor = `sauceId-${sauce.name}`
+        labelElement.innerText = sauce.name
+        inputElement.value = `${sauce.id}`
+        divElement.append(inputElement, labelElement)
+        sauceForm.append(divElement)
+    })})
+}
+
+function addMeatChecks() {
+    let meatForm = document.querySelector("#meat-category")
+
+    fetch(ingredients)
+    .then(r => r.json())
+    .then(ingredientAry => ingredientAry.filter( i => i.category == 'meat' ))
+    .then(meatAry => { meatAry.forEach( (meat) => {
+        let divElement = document.createElement("div")
+        let inputElement = document.createElement("input")
+        let labelElement = document.createElement("label")
+        divElement.className = "form-check form-check-inline"
+        inputElement.className = "form-check-input"
+        labelElement.className = 'form-check-label'
+        inputElement.type = "checkbox"
+        inputElement.id = `meatId-${meat.name}`
+        labelElement.htmlFor = `meatId-${meat.name}`
+        labelElement.innerText = meat.name
+        inputElement.value = `${meat.id}`
+        divElement.append(inputElement, labelElement)
+        meatForm.append(divElement)
+    })})
+}
+
+function addVeggieChecks() {
+    let veggieForm = document.querySelector("#veggie-category")
+
+    fetch(ingredients)
+    .then(r => r.json())
+    .then(ingredientAry => ingredientAry.filter( i => i.category == 'veggie' ))
+    .then(veggieAry => { veggieAry.forEach( (veggie) => {
+        let divElement = document.createElement("div")
+        let inputElement = document.createElement("input")
+        let labelElement = document.createElement("label")
+        divElement.className = "form-check form-check-inline"
+        inputElement.className = "form-check-input"
+        labelElement.className = 'form-check-label'
+        inputElement.type = "checkbox"
+        inputElement.id = `veggieId-${veggie.name}`
+        labelElement.htmlFor = `veggieId-${veggie.name}`
+        labelElement.innerText = veggie.name
+        inputElement.value = `${veggie.id}`
+        divElement.append(inputElement, labelElement)
+        veggieForm.append(divElement)
+    })})
+}
+
+
+
+
 
 const renderHome = () => {
 
@@ -36,6 +147,7 @@ const handleLogin = (e) => {
     .then(res => res.json())
     .then(data => {
         if (data.error) {
+            loginForm().reset()
             alert(data.error)
         }
         else {
@@ -43,6 +155,7 @@ const handleLogin = (e) => {
             loginDiv().innerText = 'Logout'
             loginDiv().removeAttribute('data-target')
             loginDiv().removeAttribute('data-toggle')
+            alert(`Welcome back, ${currentUser.name}`)
         }
     })
     } else {
@@ -65,6 +178,7 @@ const renderMTO = (e) => {
     inactivateNavItems()
     pageBodyDiv().innerHTML = ''
     e.target.parentNode.classList.add('active')
+
 }
 
 const renderSpecials = (e) => {
