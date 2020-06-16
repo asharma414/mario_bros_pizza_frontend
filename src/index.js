@@ -2,11 +2,12 @@ const mtoDiv = () => document.querySelector('#mto')
 const specialsDiv = () => document.querySelector('#specials')
 const loginDiv = () => document.querySelector('#login')
 const logoutDiv = () => document.querySelector('#logout')
-
 const containerDiv = () => document.querySelector('.container')
 const pageBodyDiv = () => document.querySelector("#pageBody")
 const homeLinkDiv = () => document.querySelector("#home-link")
 const loginForm = () => document.querySelector('#customer-login-form-modal')
+const registerForm = () => document.querySelector("#customer-register-form-modal")
+const registerDiv = () => document.querySelector('#register')
 const orderForm = () => document.querySelector('#pizza-order-form')
 let currentUser;
 
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mtoDiv().addEventListener('click', renderMTO)
     specialsDiv().addEventListener('click', renderSpecials)
     loginForm().addEventListener('submit', handleLogin)
+    registerForm().addEventListener('submit', handleRegister)
     logoutDiv().addEventListener('click', logout)
     homeLinkDiv().addEventListener('click', renderHome)
 
@@ -33,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (btnData == 'custom') {
             orderForm().reset()
+            document.getElementById('price').innerText = "7.00"
             document.getElementById('order-button').innerText = 'Place Custom Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = false)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = false)
@@ -46,6 +49,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     retrieveIngredientPrices() 
 })
+
+const handleRegister = (e) => {
+    e.preventDefault();
+    let body = {
+        name: e.target.name.value,
+        username: e.target.registerUsername.value,
+        address: e.target.address.value
+    }
+    fetch(`${baseURL}/customers`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        },
+        body: JSON.stringify(body)
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(`Thank you for registering ${data.name}. Be sure to login with username "${data.username}" before you place an order!`)
+    })
+}
 
 const updatePrice = (e) => {
     let priceEl = document.getElementById('price')
@@ -94,19 +118,18 @@ function handleOrder(e) {
     })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             orderForm().reset()
-            renderOrderDetails()
+            renderOrderDetails(data)
         })
     }
 }
 
-const renderOrderDetails = () => {
+const renderOrderDetails = (data) => {
     pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
     <h1 class="display-4">Thank you ${currentUser.name}!</h1>
-    <p class="lead">A pizza takes 25 minutes to prepare and bake.</p>
+    <p class="lead">Your ${data.quantity} pizzas total to $${data.total_price}. A pizza takes 25 minutes to prepare and bake.</p>
     <hr class="my-4 bg-white">
-    <p>It will be delivered to your address at ${currentUser.address}</p>
+    <p>It will be delivered to your address at ${currentUser.address} based on your address and instruction to "${data.delivery_instructions}"</p>
   </div>`
 }
 
@@ -163,6 +186,7 @@ const handleLogin = (e) => {
                 else {
                     currentUser = data
                     loginDiv().classList.add('d-none')
+                    registerDiv().classList.add('d-none')
                     logoutDiv().classList.remove('d-none')
                     alert(`Welcome back, ${currentUser.name}`)
                 }
@@ -175,6 +199,7 @@ const handleLogin = (e) => {
 function logout(e) {
     alert(`Thank you for your business, ${currentUser.name}!`)
     currentUser = null;
+    registerDiv().classList.remove('d-none')
     loginDiv().classList.remove('d-none')
     logoutDiv().classList.add('d-none')
 }
