@@ -65,41 +65,54 @@ function handleKartView(orderAry) {
     if (orderAry.length > 0) {
         let sum = orderAry.reduce(function (a, b) {
             return a + parseFloat(b.total_price);
-        }, 0);
-        console.log(sum)
+        }, 0).toFixed(2);
         pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
-     <h1 class="display-4">Thank you, ${currentUser.name}!</h1>
-     
-     <p class="lead">Your pizzas total to $${sum.toFixed(2)}.</p>
+     <h3 class="display-4">${currentUser.name}'s Kart!</h3>
+     <p class="lead">Your pizzas total to $<span id='total'>${sum}</span>.</p>
      <hr class="my-4 bg-white">
      <ul id="kartListOfPizza"></ul>
-     <button class='btn btn-primary'>Checkout</button>
+     <button id='checkout' class='btn btn-primary'>Checkout</button>
    </div>`
-        //    if pizza has name, listEl.innerText = order quantity pizza. pizza.name
-        // else list El
         let ordList = pageBodyDiv().querySelector("#kartListOfPizza")
 
         orderAry.forEach(ord => {
             let listEl = document.createElement('li')
+            let removeButton = document.createElement('button')
+            removeButton.className = 'btn-xs btn-danger'
+            removeButton.setAttribute('data-order-id', ord.id)
+            removeButton.innerText = 'remove'
+            removeButton.addEventListener('click', removeFromKart)
             let ingList = ord.pizza.ingredients.map(ing => ing.name).join(', ')
             if (ord.pizza.name) {
-
-                listEl.innerText = `${ord.quantity} x ${ord.pizza.name} which total(s) to $${parseFloat(ord.total_price).toFixed(2)}`
+                listEl.innerText = `${ord.quantity} x ${ord.pizza.name} which total(s) to $${parseFloat(ord.total_price).toFixed(2)} `
+                listEl.appendChild(removeButton)
             } else {
-
-                listEl.innerText = `${ord.quantity} x custom pizza with ${ingList} which total(s) to $${parseFloat(ord.total_price).toFixed(2)}`
+                listEl.innerText = `${ord.quantity} x custom pizza with ${ingList} which total(s) to $${parseFloat(ord.total_price).toFixed(2)} `
+                listEl.appendChild(removeButton)
             }
             ordList.appendChild(listEl)
         })
 
-        pageBodyDiv().querySelector('button').addEventListener('click', (e) => handleCheckout(e, orderAry))
+        pageBodyDiv().querySelector('#checkout').addEventListener('click', (e) => handleCheckout(e, orderAry, sum))
     } else {
         pageBodyDiv().innerHTML = 'You have no items in your kart'
     }
 }
 
+const removeFromKart = (e) => {
+    fetch(`${orderURL}/${e.target.getAttribute('data-order-id')}`, {
+        method: 'DELETE'
+    })
+    .then(res => res.json())
+    .then(data => {
+        let price = parseFloat(document.querySelector('#total').innerText)
+        price -= parseFloat(data.total_price)
+        document.querySelector('#total').innerText = price
+        e.target.parentNode.remove()
+    })
+}
 
-const handleCheckout = (e, orderAry) => {
+const handleCheckout = (e, orderAry, sum) => {
     fetch(`${orderURL}/${currentUser.id}`, {
         method: 'POST',
         headers: {
@@ -109,9 +122,17 @@ const handleCheckout = (e, orderAry) => {
         body: JSON.stringify({ order: orderAry.map(ord => ord.id) })
     })
         .then(res => res.json())
-        .then(console.log)
+        .then(data => renderCheckoutDetails(data, sum))
 }
 
+const renderCheckoutDetails = (data, sum) => {
+    pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
+    <h3 class="display-4">Thank you, ${currentUser.name}!</h3>
+    <p class="lead">Your order total was $${sum}. Pizzas take about 25 minutes to prepare</p>
+    <hr class="my-4 bg-white">
+    <p>The pizza will be delivered to ${currentUser.address} as per your address and instructions to "${data.pop().delivery_instructions}"</p>
+    </div>`
+}
 
 const handleRegister = (e) => {
     e.preventDefault();
