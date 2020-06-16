@@ -24,9 +24,28 @@ document.addEventListener('DOMContentLoaded', () => {
     orderForm().addEventListener('submit', handleOrder)
     orderForm().addEventListener('change', updatePrice)
 
+    $('#pizzaOrderModal').on('show.bs.modal', function (event) {
+        let button = $(event.relatedTarget) // Button that triggered the modal
+        let recipient = button[0].getAttribute('data-button') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        let modal = $(this)
+        if (recipient == 'custom') {
+            orderForm().reset()
+            document.getElementById('order-button').innerText = 'Place Custom Order'
+            orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = false)
+            orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = false)
+        } else {
+            document.getElementById('order-button').innerText = 'Place Special Order'
+            orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = true)
+            orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = true)
+            orderForm().querySelector('textarea').disabled = false;
+        }
+      })
+
+
     retrieveIngredientPrices()
 })
-
 
 const updatePrice = (e) => {
     let priceEl = document.getElementById('price')
@@ -219,6 +238,7 @@ const renderCarouselImage = (spc) => {
     let buyBtn = document.createElement('button')
     buyBtn.setAttribute("data-target", "#pizzaOrderModal")
     buyBtn.setAttribute("data-toggle", "modal")
+    buyBtn.setAttribute('data-button', 'special')
     // data-target='#pizzaOrderModal' data-toggle='modal'
 
     let specialPrice = parseFloat(spc.price).toFixed(2)
@@ -244,12 +264,11 @@ const handleSpecialBuyButton = (e, spc) => {
     })
     
     document.getElementById('price').innerText = specialPrice
-    document.getElementById('order-button').innerText = 'Buy Special'
     document.getElementById('pizzaCutFormSelect').value = spc.cut
     document.getElementById('pizzaBakeFormSelect').value = spc.bake
     document.getElementById('pizzaSizeFormSelect').value = spc.size
-
-    
     
 
 }
+
+
