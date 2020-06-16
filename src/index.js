@@ -20,14 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm().addEventListener('submit', handleLogin)
     homeLinkDiv().addEventListener('click', renderHome)
 
-    addCheeseChecks()
-    addSauceChecks()
-    addMeatChecks()
-    addVeggieChecks()
+    addCheckBoxes()
     orderForm().addEventListener('submit', handleOrder)
     orderForm().addEventListener('change', updatePrice)
-    //['Veggie', 'Cheese', 'Sauce', 'Meet'].forEach(addChecks)
-    //addChecks("Veggie")
 
     retrieveIngredientPrices()
 })
@@ -51,6 +46,7 @@ function retrieveIngredientPrices() {
 }
 
 function handleOrder(e) {
+    document.getElementById('order-button').innerText = 'Place custom order'
     let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
     let nodeArr = [...nodeList].map(ingredient => parseInt(ingredient.value))
     e.preventDefault()
@@ -85,113 +81,34 @@ const renderOrderDetails = () => {
   </div>`
 }
 
-
-function addCheeseChecks() {
-    let cheeseForm = document.querySelector("#cheese-category")
-
+function addCheckBoxes() {
+    let ingredientCategories = ['veggie', 'cheese', 'sauce', 'meat']
     fetch(ingredients)
-        .then(r => r.json())
-        .then(ingredientAry => ingredientAry.filter(i => i.category == 'cheese'))
-        .then(cheeseAry => {
-            cheeseAry.forEach((cheese) => {
-                let divElement = document.createElement("div")
-                let inputElement = document.createElement("input")
-                let labelElement = document.createElement("label")
-                divElement.className = "form-check form-check-inline"
-                inputElement.className = "form-check-input"
-                labelElement.className = 'form-check-label'
-                inputElement.type = "checkbox"
-                inputElement.id = `chzId-${cheese.id}`
-                inputElement.setAttribute('data-category', 'cheese')
-                labelElement.htmlFor = `chzId-${cheese.name}`
-                labelElement.innerText = cheese.name
-                inputElement.value = `${cheese.id}`
-                divElement.append(inputElement, labelElement)
-                cheeseForm.append(divElement)
+        .then(res => res.json())
+        .then(ingredientAry => {
+            ingredientCategories.forEach((ingredCat) => {
+                let categoryForm = document.querySelector(`#${ingredCat}-category`)
+                let filteredIngredientAry = ingredientAry.filter( i => i.category == ingredCat)
+                filteredIngredientAry.forEach((ing) => {
+                    let divElement = document.createElement("div")
+                    let inputElement = document.createElement("input")
+                    let labelElement = document.createElement("label")
+                    divElement.className = "form-check form-check-inline"
+                    inputElement.className = "form-check-input"
+                    labelElement.className = 'form-check-label'
+                    inputElement.type = "checkbox"
+                    inputElement.id = `ingredientId-${ing.id}`
+                    inputElement.setAttribute('data-category', ingredCat)
+                    labelElement.htmlFor = `ingredientId-${ing.id}`
+                    labelElement.innerText = ing.name
+                    inputElement.value = ing.id
+
+                    divElement.append(inputElement, labelElement)
+                    categoryForm.append(divElement)
+                })
             })
         })
 }
-
-function addSauceChecks() {
-    let sauceForm = document.querySelector("#sauce-category")
-
-    fetch(ingredients)
-        .then(r => r.json())
-        .then(ingredientAry => ingredientAry.filter(i => i.category == 'sauce'))
-        .then(sauceAry => {
-            sauceAry.forEach((sauce) => {
-                let divElement = document.createElement("div")
-                let inputElement = document.createElement("input")
-                let labelElement = document.createElement("label")
-                divElement.className = "form-check form-check-inline"
-                inputElement.className = "form-check-input"
-                labelElement.className = 'form-check-label'
-                inputElement.type = "checkbox"
-                inputElement.id = `sauceId-${sauce.id}`
-                inputElement.setAttribute('data-category', 'sauce')
-                labelElement.htmlFor = `sauceId-${sauce.name}`
-                labelElement.innerText = sauce.name
-                inputElement.value = `${sauce.id}`
-                divElement.append(inputElement, labelElement)
-                sauceForm.append(divElement)
-            })
-        })
-}
-
-function addMeatChecks() {
-    let meatForm = document.querySelector("#meat-category")
-
-    fetch(ingredients)
-        .then(r => r.json())
-        .then(ingredientAry => ingredientAry.filter(i => i.category == 'meat'))
-        .then(meatAry => {
-            meatAry.forEach((meat) => {
-                let divElement = document.createElement("div")
-                let inputElement = document.createElement("input")
-                let labelElement = document.createElement("label")
-                divElement.className = "form-check form-check-inline"
-                inputElement.className = "form-check-input"
-                labelElement.className = 'form-check-label'
-                inputElement.type = "checkbox"
-                inputElement.setAttribute('data-category', 'meat')
-                inputElement.id = `meatId-${meat.id}`
-                labelElement.htmlFor = `meatId-${meat.name}`
-                labelElement.innerText = meat.name
-                inputElement.value = `${meat.id}`
-                divElement.append(inputElement, labelElement)
-                meatForm.append(divElement)
-            })
-        })
-}
-
-function addVeggieChecks() {
-    let veggieForm = document.querySelector("#veggie-category")
-
-    fetch(ingredients)
-        .then(r => r.json())
-        .then(ingredientAry => ingredientAry.filter(i => i.category == 'veggie'))
-        .then(veggieAry => {
-            veggieAry.forEach((veggie) => {
-                let divElement = document.createElement("div")
-                let inputElement = document.createElement("input")
-                let labelElement = document.createElement("label")
-                divElement.className = "form-check form-check-inline"
-                inputElement.className = "form-check-input"
-                labelElement.className = 'form-check-label'
-                inputElement.type = "checkbox"
-                inputElement.id = `veggieId-${veggie.id}`
-                inputElement.setAttribute('data-category', 'veggie')
-                labelElement.htmlFor = `veggieId-${veggie.name}`
-                labelElement.innerText = veggie.name
-                inputElement.value = `${veggie.id}`
-                divElement.append(inputElement, labelElement)
-                veggieForm.append(divElement)
-            })
-        })
-}
-
-
-
 
 
 const renderHome = () => {
@@ -270,7 +187,7 @@ const renderSpecials = (e) => {
                         <span class="sr-only">Next</span>
                     </a>
                     </div>`
-                specialsAry.forEach(renderSpecialCard)
+                specialsAry.forEach(renderCarouselImage)
             })
             .then(() => {
                 e.target.parentNode.classList.add('active')
@@ -285,7 +202,7 @@ const inactivateNavItems = () => {
     })
 }
 
-const renderSpecialCard = (spc) => {
+const renderCarouselImage = (spc) => {
     let carousel = document.getElementById('specialsCarousel')
     let inner = document.querySelector('.carousel-inner')
 
@@ -298,9 +215,18 @@ const renderSpecialCard = (spc) => {
     let caption = document.createElement('div')
     caption.className = "carousel-caption d-none d-md-block"
 
-    let h5 = document.createElement('h5')
-    h5.innerText = spc.name
-    item.append(img, caption, h5)
+    let para = document.createElement('p')
+    let buyBtn = document.createElement('button')
+    buyBtn.setAttribute("data-target", "#pizzaOrderModal")
+    buyBtn.setAttribute("data-toggle", "modal")
+    // data-target='#pizzaOrderModal' data-toggle='modal'
+
+    let specialPrice = parseFloat(spc.price).toFixed(2)
+    buyBtn.innerText = `Buy the ${spc.name} for $${specialPrice}`
+    buyBtn.addEventListener("click", (e) => {handleSpecialBuyButton(e, spc)})
+    para.appendChild(buyBtn)
+    caption.appendChild(para)
+    item.append(img, caption)
     inner.appendChild(item)
 
     inner.querySelector('.carousel-item').classList.add('active')
@@ -308,7 +234,22 @@ const renderSpecialCard = (spc) => {
 
 }
 
-const handleSpecialBuyButton = (e, pz) => {
-                    alert(`Thanks for your purchase of ${pz.name}! It will cost $${pz.price}`)
-                    //TODO make this legit
-                }
+const handleSpecialBuyButton = (e, spc) => {
+    specialPrice = parseFloat(spc.price).toFixed(2)
+    console.log(spc.ingredients)
+    console.log(spc.ingredients.map( spc => spc.id))
+    let ingredientIdArray = spc.ingredients.map(spc => spc.id)
+    ingredientIdArray.forEach(id => {
+        orderForm().querySelector(`#ingredientId-${id}`).checked = true
+    })
+    
+    document.getElementById('price').innerText = specialPrice
+    document.getElementById('order-button').innerText = 'Buy Special'
+    document.getElementById('pizzaCutFormSelect').value = spc.cut
+    document.getElementById('pizzaBakeFormSelect').value = spc.bake
+    document.getElementById('pizzaSizeFormSelect').value = spc.size
+
+    
+    
+
+}

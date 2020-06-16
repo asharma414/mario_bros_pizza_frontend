@@ -4,14 +4,6 @@ body {
     background-size: cover;
 }
 
-.card {
-
-    object-fit: cover;
-}
-.card-img-top {
-    max-height: 200px;
-}
-
 .carousel {
     margin: auto;
     height: 480px !important;
