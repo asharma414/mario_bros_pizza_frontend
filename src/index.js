@@ -44,8 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
 
-    retrieveIngredientPrices()
-    
+    retrieveIngredientPrices() 
 })
 
 const updatePrice = (e) => {
@@ -56,6 +55,8 @@ const updatePrice = (e) => {
     nodeArr.forEach(ing => {
         price += todaysPrices[0][ing]
     })
+    let quantity = document.getElementById('pizza-quantity-input').value
+    price *= quantity
     priceEl.innerText = price.toFixed(2)
 }
 
@@ -74,7 +75,10 @@ function handleOrder(e) {
     document.getElementById('order-button').innerText = 'Place custom order'
     let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
     let nodeArr = [...nodeList].map(ingredient => parseInt(ingredient.value))
+    // debugger
     let body = {
+        
+        quantity: parseInt(e.target.quantity.value),
         customer_id: currentUser.id,
         size: e.target.size.value,
         bake: e.target.bake.value,
