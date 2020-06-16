@@ -14,3 +14,11 @@ body {
     height: 480px !important;
     width: 640px !important;
 }
+
+.nav-link {
+    cursor: pointer;
+}
+
+.navbar-brand {
+    cursor: pointer;
+}

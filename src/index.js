@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
 
     retrieveIngredientPrices() 
+    renderHome()
 })
 
 const handleRegister = (e) => {
@@ -163,7 +164,11 @@ function addCheckBoxes() {
 }
 
 const renderHome = () => {
-
+    pageBodyDiv().innerHTML = ''
+    let welcome = document.createElement('img')
+    welcome.src = 'assets/welcomeMarioPizza.png'
+    welcome.style.float = 'right'
+    pageBodyDiv().appendChild(welcome)
 }
 
 const handleLogin = (e) => {
