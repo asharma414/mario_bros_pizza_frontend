@@ -26,11 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('#pizzaOrderModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
-        let recipient = button[0].getAttribute('data-button') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        let modal = $(this)
-        if (recipient == 'custom') {
+        let btnData = button[0].getAttribute('data-button')  
+
+        if (btnData == 'custom') {
             orderForm().reset()
             document.getElementById('order-button').innerText = 'Place Custom Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = false)
@@ -43,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
 
-
     retrieveIngredientPrices()
+    
 })
 
 const updatePrice = (e) => {
@@ -65,10 +63,14 @@ function retrieveIngredientPrices() {
 }
 
 function handleOrder(e) {
+    e.preventDefault()
+    if (!currentUser) {
+        alert("Please Log In!")
+        $('#loginModal').modal('toggle')
+    } else {   
     document.getElementById('order-button').innerText = 'Place custom order'
     let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
     let nodeArr = [...nodeList].map(ingredient => parseInt(ingredient.value))
-    e.preventDefault()
     let body = {
         customer_id: currentUser.id,
         size: e.target.size.value,
@@ -89,6 +91,7 @@ function handleOrder(e) {
             orderForm().reset()
             renderOrderDetails()
         })
+    }
 }
 
 const renderOrderDetails = () => {
@@ -128,7 +131,6 @@ function addCheckBoxes() {
             })
         })
 }
-
 
 const renderHome = () => {
 
@@ -256,18 +258,13 @@ const renderCarouselImage = (spc) => {
 
 const handleSpecialBuyButton = (e, spc) => {
     specialPrice = parseFloat(spc.price).toFixed(2)
-    console.log(spc.ingredients)
-    console.log(spc.ingredients.map( spc => spc.id))
     let ingredientIdArray = spc.ingredients.map(spc => spc.id)
-    ingredientIdArray.forEach(id => {
-        orderForm().querySelector(`#ingredientId-${id}`).checked = true
-    })
+    ingredientIdArray.forEach(id => {orderForm().querySelector(`#ingredientId-${id}`).checked = true})
     
     document.getElementById('price').innerText = specialPrice
     document.getElementById('pizzaCutFormSelect').value = spc.cut
     document.getElementById('pizzaBakeFormSelect').value = spc.bake
     document.getElementById('pizzaSizeFormSelect').value = spc.size
-    
 
 }
 
