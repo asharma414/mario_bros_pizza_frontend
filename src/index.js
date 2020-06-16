@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('#pizzaOrderModal').on('show.bs.modal', function (event) {
         let button = $(event.relatedTarget) // Button that triggered the modal
-        let btnData = button[0].getAttribute('data-button')  
+        let btnData = button[0].getAttribute('data-button')
 
         if (btnData == 'custom') {
             orderForm().reset()
@@ -47,47 +47,70 @@ document.addEventListener('DOMContentLoaded', () => {
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = true)
             orderForm().querySelector('textarea').disabled = false;
         }
-      })
+    })
 
-    retrieveIngredientPrices() 
+    retrieveIngredientPrices()
     renderHome()
 })
 
 function fetchKartItems(e) {
     user_id = currentUser.id
     fetch(`${orderURL}/${user_id}`)
-    .then(res => res.json())
-    .then(handleKartView)
+        .then(res => res.json())
+        .then(handleKartView)
 
 }
 
 function handleKartView(orderAry) {
-    pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
+    if (orderAry.length > 0) {
+        let sum = orderAry.reduce(function (a, b) {
+            return a + parseFloat(b.total_price);
+        }, 0);
+        console.log(sum)
+        pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
      <h1 class="display-4">Thank you, ${currentUser.name}!</h1>
      
-     <p class="lead">Your pizzas total to $FIX ME!. A pizza takes 25 minutes to prepare and bake.</p>
+     <p class="lead">Your pizzas total to $${sum.toFixed(2)}.</p>
      <hr class="my-4 bg-white">
      <ul id="kartListOfPizza"></ul>
-     <p>It will be delivered to your address at ${currentUser.address} based on your address and instruction to "{data.delivery_instructions}"</p>
      <button class='btn btn-primary'>Checkout</button>
    </div>`
-//    if pizza has name, listEl.innerText = order quantity pizza. pizza.name
-// else list El
-    let ordList = pageBodyDiv().querySelector("#kartListOfPizza")
-    
-    orderAry.forEach(ord => {
-        let listEl = document.createElement('li')
-        if (ord.pizza.name) {
-            
-            listEl.innerText = `${ord.quantity} ${ord.pizza.name}`
-        } else {
-            
-            listEl.innerText = `${ord.quantity} ${ord.pizza.ingredients[0].name} pizza`
-        }
-        ordList.appendChild(listEl)
-    })
+        //    if pizza has name, listEl.innerText = order quantity pizza. pizza.name
+        // else list El
+        let ordList = pageBodyDiv().querySelector("#kartListOfPizza")
+
+        orderAry.forEach(ord => {
+            let listEl = document.createElement('li')
+            let ingList = ord.pizza.ingredients.map(ing => ing.name).join(', ')
+            if (ord.pizza.name) {
+
+                listEl.innerText = `${ord.quantity} x ${ord.pizza.name} which total(s) to $${parseFloat(ord.total_price).toFixed(2)}`
+            } else {
+
+                listEl.innerText = `${ord.quantity} x custom pizza with ${ingList} which total(s) to $${parseFloat(ord.total_price).toFixed(2)}`
+            }
+            ordList.appendChild(listEl)
+        })
+
+        pageBodyDiv().querySelector('button').addEventListener('click', (e) => handleCheckout(e, orderAry))
+    } else {
+        pageBodyDiv().innerHTML = 'You have no items in your kart'
+    }
 }
 
+
+const handleCheckout = (e, orderAry) => {
+    fetch(`${orderURL}/${currentUser.id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        },
+        body: JSON.stringify({ order: orderAry.map(ord => ord.id) })
+    })
+        .then(res => res.json())
+        .then(console.log)
+}
 
 
 const handleRegister = (e) => {
@@ -105,10 +128,10 @@ const handleRegister = (e) => {
         },
         body: JSON.stringify(body)
     })
-    .then(res => res.json())
-    .then(data => {
-        alert(`Thank you for registering ${data.name}. Be sure to login with username "${data.username}" before you place an order!`)
-    })
+        .then(res => res.json())
+        .then(data => {
+            alert(`Thank you for registering ${data.name}. Be sure to login with username "${data.username}" before you place an order!`)
+        })
 }
 
 const updatePrice = (e) => {
@@ -135,32 +158,32 @@ function handleOrder(e) {
     if (!currentUser) {
         alert("Please Log In!")
         $('#loginModal').modal('toggle')
-    } else {   
-    // document.getElementById('order-button').innerText = 'Place custom order'
-    let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
-    let nodeArr = [...nodeList].map(ingredient => parseInt(ingredient.value))
-    // debugger
-    let body = {
-        
-        quantity: parseInt(e.target.quantity.value),
-        customer_id: currentUser.id,
-        size: e.target.size.value,
-        bake: e.target.bake.value,
-        cut: e.target.cut.value,
-        ingredients: nodeArr,
-        delivery_instructions: e.target.deliveryInstructions.value
-    }
+    } else {
+        // document.getElementById('order-button').innerText = 'Place custom order'
+        let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
+        let nodeArr = [...nodeList].map(ingredient => parseInt(ingredient.value))
+        // debugger
+        let body = {
 
-    fetch(orderURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(body)
-    })
-        .then(res => res.json())
-        .then(data => {
-            orderForm().reset()
-            renderOrderDetails(data)
+            quantity: parseInt(e.target.quantity.value),
+            customer_id: currentUser.id,
+            size: e.target.size.value,
+            bake: e.target.bake.value,
+            cut: e.target.cut.value,
+            ingredients: nodeArr,
+            delivery_instructions: e.target.deliveryInstructions.value
+        }
+
+        fetch(orderURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(body)
         })
+            .then(res => res.json())
+            .then(data => {
+                orderForm().reset()
+                renderOrderDetails(data)
+            })
     }
 }
 
@@ -176,7 +199,7 @@ function addCheckBoxes() {
         .then(ingredientAry => {
             ingredientCategories.forEach((ingredCat) => {
                 let categoryForm = document.querySelector(`#${ingredCat}-category`)
-                let filteredIngredientAry = ingredientAry.filter( i => i.category == ingredCat)
+                let filteredIngredientAry = ingredientAry.filter(i => i.category == ingredCat)
                 filteredIngredientAry.forEach((ing) => {
                     let divElement = document.createElement("div")
                     let inputElement = document.createElement("input")
@@ -244,6 +267,7 @@ function logout(e) {
     loginDiv().classList.remove('d-none')
     logoutDiv().classList.add('d-none')
     kartDiv().classList.add('d-none')
+    renderHome()
 }
 
 
@@ -316,7 +340,7 @@ const renderCarouselImage = (spc) => {
 
     let specialPrice = parseFloat(spc.price).toFixed(2)
     buyBtn.innerText = `Buy the ${spc.name} for $${specialPrice}`
-    buyBtn.addEventListener("click", (e) => {handleSpecialBuyButton(e, spc)})
+    buyBtn.addEventListener("click", (e) => { handleSpecialBuyButton(e, spc) })
     para.appendChild(buyBtn)
     caption.appendChild(para)
     item.append(img, caption)
@@ -330,8 +354,8 @@ const renderCarouselImage = (spc) => {
 const handleSpecialBuyButton = (e, spc) => {
     specialPrice = parseFloat(spc.price).toFixed(2)
     let ingredientIdArray = spc.ingredients.map(spc => spc.id)
-    ingredientIdArray.forEach(id => {orderForm().querySelector(`#ingredientId-${id}`).checked = true})
-    
+    ingredientIdArray.forEach(id => { orderForm().querySelector(`#ingredientId-${id}`).checked = true })
+
     document.getElementById('price').innerText = specialPrice
     document.getElementById('pizzaCutFormSelect').value = spc.cut
     document.getElementById('pizzaBakeFormSelect').value = spc.bake
