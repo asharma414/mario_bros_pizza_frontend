@@ -2,6 +2,7 @@ const mtoDiv = () => document.querySelector('#mto')
 const specialsDiv = () => document.querySelector('#specials')
 const loginDiv = () => document.querySelector('#login')
 const logoutDiv = () => document.querySelector('#logout')
+const kartDiv = () => document.querySelector('#kart')
 const containerDiv = () => document.querySelector('.container')
 const pageBodyDiv = () => document.querySelector("#pageBody")
 const homeLinkDiv = () => document.querySelector("#home-link")
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm().addEventListener('submit', handleRegister)
     logoutDiv().addEventListener('click', logout)
     homeLinkDiv().addEventListener('click', renderHome)
+    kartDiv().addEventListener('click', fetchKartItems)
 
     addCheckBoxes()
     orderForm().addEventListener('submit', handleOrder)
@@ -36,11 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnData == 'custom') {
             orderForm().reset()
             document.getElementById('price').innerText = "7.00"
-            document.getElementById('order-button').innerText = 'Place Custom Order'
+            // document.getElementById('order-button').innerText = 'Place Custom Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = false)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = false)
         } else {
-            document.getElementById('order-button').innerText = 'Place Special Order'
+            // document.getElementById('order-button').innerText = 'Place Special Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = true)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = true)
             orderForm().querySelector('textarea').disabled = false;
@@ -50,6 +52,43 @@ document.addEventListener('DOMContentLoaded', () => {
     retrieveIngredientPrices() 
     renderHome()
 })
+
+function fetchKartItems(e) {
+    user_id = currentUser.id
+    fetch(`${orderURL}/${user_id}`)
+    .then(res => res.json())
+    .then(handleKartView)
+
+}
+
+function handleKartView(orderAry) {
+    pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
+     <h1 class="display-4">Thank you, ${currentUser.name}!</h1>
+     
+     <p class="lead">Your pizzas total to $FIX ME!. A pizza takes 25 minutes to prepare and bake.</p>
+     <hr class="my-4 bg-white">
+     <ul id="kartListOfPizza"></ul>
+     <p>It will be delivered to your address at ${currentUser.address} based on your address and instruction to "{data.delivery_instructions}"</p>
+     <button class='btn btn-primary'>Checkout</button>
+   </div>`
+//    if pizza has name, listEl.innerText = order quantity pizza. pizza.name
+// else list El
+    let ordList = pageBodyDiv().querySelector("#kartListOfPizza")
+    
+    orderAry.forEach(ord => {
+        let listEl = document.createElement('li')
+        if (ord.pizza.name) {
+            
+            listEl.innerText = `${ord.quantity} ${ord.pizza.name}`
+        } else {
+            
+            listEl.innerText = `${ord.quantity} ${ord.pizza.ingredients[0].name} pizza`
+        }
+        ordList.appendChild(listEl)
+    })
+}
+
+
 
 const handleRegister = (e) => {
     e.preventDefault();
@@ -97,7 +136,7 @@ function handleOrder(e) {
         alert("Please Log In!")
         $('#loginModal').modal('toggle')
     } else {   
-    document.getElementById('order-button').innerText = 'Place custom order'
+    // document.getElementById('order-button').innerText = 'Place custom order'
     let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
     let nodeArr = [...nodeList].map(ingredient => parseInt(ingredient.value))
     // debugger
@@ -126,12 +165,8 @@ function handleOrder(e) {
 }
 
 const renderOrderDetails = (data) => {
-    pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
-    <h1 class="display-4">Thank you ${currentUser.name}!</h1>
-    <p class="lead">Your ${data.quantity} pizzas total to $${data.total_price}. A pizza takes 25 minutes to prepare and bake.</p>
-    <hr class="my-4 bg-white">
-    <p>It will be delivered to your address at ${currentUser.address} based on your address and instruction to "${data.delivery_instructions}"</p>
-  </div>`
+    alert(`Added ${data.quantity} pizzas to your kart.`)
+
 }
 
 function addCheckBoxes() {
@@ -193,6 +228,7 @@ const handleLogin = (e) => {
                     loginDiv().classList.add('d-none')
                     registerDiv().classList.add('d-none')
                     logoutDiv().classList.remove('d-none')
+                    kartDiv().classList.remove('d-none')
                     alert(`Welcome back, ${currentUser.name}`)
                 }
             })
@@ -207,6 +243,7 @@ function logout(e) {
     registerDiv().classList.remove('d-none')
     loginDiv().classList.remove('d-none')
     logoutDiv().classList.add('d-none')
+    kartDiv().classList.add('d-none')
 }
 
 
