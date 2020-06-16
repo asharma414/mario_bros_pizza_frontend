@@ -1,6 +1,8 @@
 const mtoDiv = () => document.querySelector('#mto')
 const specialsDiv = () => document.querySelector('#specials')
 const loginDiv = () => document.querySelector('#login')
+const logoutDiv = () => document.querySelector('#logout')
+
 const containerDiv = () => document.querySelector('.container')
 const pageBodyDiv = () => document.querySelector("#pageBody")
 const homeLinkDiv = () => document.querySelector("#home-link")
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mtoDiv().addEventListener('click', renderMTO)
     specialsDiv().addEventListener('click', renderSpecials)
     loginForm().addEventListener('submit', handleLogin)
+    logoutDiv().addEventListener('click', logout)
     homeLinkDiv().addEventListener('click', renderHome)
 
     addCheckBoxes()
@@ -155,26 +158,23 @@ const handleLogin = (e) => {
                 }
                 else {
                     currentUser = data
-                    loginDiv().innerText = 'Logout'
-                    loginDiv().removeAttribute('data-target')
-                    loginDiv().removeAttribute('data-toggle')
+                    loginDiv().classList.add('d-none')
+                    logoutDiv().classList.remove('d-none')
                     alert(`Welcome back, ${currentUser.name}`)
                 }
             })
     } else {
-        currentUser = null;
-        loginDiv().innerText = 'Login'
-        loginDiv().setAttribute('data-target', '#loginModal')
-        loginDiv().setAttribute('data-toggle', 'modal')
+        logout()
     }
-    //fetch(customers)
-    //pageBodyDiv().innerHTML = ''
-    //e.target.parentNode.classList.add('active')
 }
 
-// <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-// Launch demo modal
-// </button>
+function logout(e) {
+    alert(`Thank you for your business, ${currentUser.name}!`)
+    currentUser = null;
+    loginDiv().classList.remove('d-none')
+    logoutDiv().classList.add('d-none')
+}
+
 
 
 const renderMTO = (e) => {
