@@ -17,6 +17,7 @@ const specialsURL = `${baseURL}/pizzas`
 const ingredients = `${baseURL}/ingredients`
 const orderURL = `${baseURL}/orders`
 let todaysPrices;
+ let selectedSpecialPrice;
 
 document.addEventListener('DOMContentLoaded', () => {
     mtoDiv().addEventListener('click', renderMTO)
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // document.getElementById('order-button').innerText = 'Place Special Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = true)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = true)
+            orderForm().querySelector('#pizza-quantity-input').disabled = false;
             orderForm().querySelector('textarea').disabled = false;
         }
     })
@@ -58,7 +60,6 @@ function fetchKartItems(e) {
     fetch(`${orderURL}/${user_id}`)
         .then(res => res.json())
         .then(handleKartView)
-
 }
 
 function handleKartView(orderAry) {
@@ -156,16 +157,27 @@ const handleRegister = (e) => {
 }
 
 const updatePrice = (e) => {
-    let priceEl = document.getElementById('price')
-    let price = todaysPrices[1][e.currentTarget.size.value]
-    let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
-    let nodeArr = [...nodeList].map(ingredient => ingredient.dataset.category)
-    nodeArr.forEach(ing => {
-        price += todaysPrices[0][ing]
-    })
-    let quantity = document.getElementById('pizza-quantity-input').value
-    price *= quantity
-    priceEl.innerText = price.toFixed(2)
+    // debugger 
+    if (orderForm().querySelector('.form-control').disabled == true ){
+        //apply special price instead
+        debugger    
+        let priceEl = document.getElementById('price')
+        let price = selectedSpecialPrice
+        let quantity = parseInt(document.getElementById('pizza-quantity-input').value)
+        price *= quantity
+        priceEl.innerText = price.toFixed(2)
+    } else if (e.target.nodeName != 'TEXTAREA') {
+        let priceEl = document.getElementById('price')
+        let price = todaysPrices[1][e.currentTarget.size.value]
+        let nodeList = document.querySelectorAll('input[type="checkbox"]:checked')
+        let nodeArr = [...nodeList].map(ingredient => ingredient.dataset.category)
+        nodeArr.forEach(ing => {
+            price += todaysPrices[0][ing]
+        })
+        let quantity = document.getElementById('pizza-quantity-input').value
+        price *= quantity
+        priceEl.innerText = price.toFixed(2)
+    } 
 }
 
 function retrieveIngredientPrices() {
@@ -359,7 +371,7 @@ const renderCarouselImage = (spc) => {
     buyBtn.setAttribute('data-button', 'special')
     // data-target='#pizzaOrderModal' data-toggle='modal'
 
-    let specialPrice = parseFloat(spc.price).toFixed(2)
+    specialPrice = parseFloat(spc.price).toFixed(2)
     buyBtn.innerText = `Buy the ${spc.name} for $${specialPrice}`
     buyBtn.addEventListener("click", (e) => { handleSpecialBuyButton(e, spc) })
     para.appendChild(buyBtn)
@@ -373,10 +385,10 @@ const renderCarouselImage = (spc) => {
 }
 
 const handleSpecialBuyButton = (e, spc) => {
-    specialPrice = parseFloat(spc.price).toFixed(2)
+    let specialPrice = parseFloat(spc.price).toFixed(2)
     let ingredientIdArray = spc.ingredients.map(spc => spc.id)
     ingredientIdArray.forEach(id => { orderForm().querySelector(`#ingredientId-${id}`).checked = true })
-
+    selectedSpecialPrice = specialPrice
     document.getElementById('price').innerText = specialPrice
     document.getElementById('pizzaCutFormSelect').value = spc.cut
     document.getElementById('pizzaBakeFormSelect').value = spc.bake
