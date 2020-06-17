@@ -18,6 +18,8 @@ const specialsURL = `${baseURL}/pizzas`
 const ingredients = `${baseURL}/ingredients`
 const orderURL = `${baseURL}/orders`
 
+const headerObj = { 'Content-Type': 'application/json', Accept: 'application/json' }
+
 let currentUser;
 let todaysPrices;
 let selectedSpecialPrice;
@@ -86,7 +88,7 @@ const handleLogin = (e) => {
     if (!currentUser) {
         fetch(`${baseURL}/login`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            headers: headerObj,
             body: JSON.stringify({
                 username: e.target.username.value
             })
@@ -130,10 +132,7 @@ const handleRegister = (e) => {
     }
     fetch(`${baseURL}/customers`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-        },
+        headers: headerObj,
         body: JSON.stringify(body)
     })
         .then(res => res.json())
@@ -143,6 +142,12 @@ const handleRegister = (e) => {
 }
 
 //ORDER FORM
+
+const renderMTO = (e) => {
+    inactivateNavItems()
+    pageBodyDiv().innerHTML = ''
+    e.target.parentNode.classList.add('active')
+}
 
 const updatePrice = (e) => {
     // debugger 
@@ -196,7 +201,7 @@ function handleOrder(e) {
 
         fetch(orderURL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            headers: headerObj,
             body: JSON.stringify(body)
         })
             .then(res => res.json())
@@ -247,12 +252,7 @@ function addCheckBoxes() {
         })
 }
 
-const renderMTO = (e) => {
-    inactivateNavItems()
-    pageBodyDiv().innerHTML = ''
-    e.target.parentNode.classList.add('active')
 
-}
 
 //SPECIAL CAROUSEL
 const renderSpecials = (e) => {
@@ -377,7 +377,8 @@ function handleKartView(orderAry) {
 
         pageBodyDiv().querySelector('#checkout').addEventListener('click', (e) => handleCheckout(e, orderAry, sum))
     } else {
-        pageBodyDiv().innerHTML = 'You have no items in your kart'
+       
+        pageBodyDiv().replaceChild(superMarioSpanGenerator("You have no items in your Kart!"), pageBodyDiv().firstChild)
     }
 }
 
@@ -398,10 +399,7 @@ const removeFromKart = (e) => {
 const handleCheckout = (e, orderAry, sum) => {
     fetch(`${orderURL}/${currentUser.id}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-        },
+        headers: headerObj,
         body: JSON.stringify({ order: orderAry.map(ord => ord.id) })
     })
         .then(res => res.json())
@@ -419,8 +417,25 @@ const renderCheckoutDetails = (data, sum) => {
     </div>`
 }
 
-//MAP API
+// :)
 
-
-
-
+function superMarioSpanGenerator(string) {
+    let returnDiv = document.createElement('div')
+    let strAry = string.split('')
+    let colors = ['blueMario headerMario', 'greenMario headerMario', 'yellowMario headerMario', 'redMario headerMario']
+    let last
+    strAry.forEach((let) => {
+        spn = document.createElement('span')
+        let index = Math.floor(Math.random() * colors.length);
+        if (index === last) {
+            spn.className = colors[(index + 1) % 4]
+            last = (index + 1) % 4
+        } else {
+            spn.className = colors[index]
+            last = index
+        }
+        spn.innerText = let
+        returnDiv.appendChild(spn)
+    })
+    return returnDiv
+}

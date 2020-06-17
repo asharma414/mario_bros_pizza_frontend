@@ -1,7 +1,34 @@
+@font-face {
+    font-family: mario;
+    src: url(../assets/fonts/SuperMario256.ttf); 
+}
+
 body {
     background-image: url('https://c.pxhere.com/photos/3a/c3/pizza_maker_pizzeria_pizza_oven_chef_pizza_bake_drawing_cooking-1149372.jpg!d');
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.headerMario {
+    font-family: mario;
+    font-size: 100px;
+    -webkit-text-stroke: 4px black; 
+    /* text-stroke: 4px navy; */
+}
+
+.redMario {
+    color: rgb(235,58,50);
+}
+
+.blueMario {
+    color: rgb(0,168,214);
+}
+
+.yellowMario {
+    color: rgb(248,206,72);
+}
+.greenMario {
+    color: rgb(86,183,95);
 }
 
 .carousel {
@@ -33,3 +60,4 @@ body {
 .hover-desc {
     width: 100px;
 }
+
