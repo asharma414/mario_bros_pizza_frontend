@@ -13,9 +13,6 @@ const registerForm = () => document.querySelector("#customer-register-form-modal
 const registerDiv = () => document.querySelector('#register')
 const orderForm = () => document.querySelector('#pizza-order-form')
 
-const marioPizzaGeo = [-77.036728, 38.900475] //mapBox does longitude, latitude
-let token  = require('../tokensandkeys.js')
-
 const baseURL = "http://localhost:3000"
 const specialsURL = `${baseURL}/pizzas`
 const ingredients = `${baseURL}/ingredients`
@@ -28,7 +25,6 @@ let selectedSpecialPrice;
 //DOM CONTENT LOADED
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log(token)
     mtoDiv().addEventListener('click', renderMTO)
     specialsDiv().addEventListener('click', renderSpecials)
     loginForm().addEventListener('submit', handleLogin)
@@ -413,10 +409,6 @@ const renderCheckoutDetails = (data, sum) => {
 
 //MAP API
 
-function currentUserGeo(customer) {
-    let customerAddress = currentUser.address
-
-}
 
 
 
