@@ -9,6 +9,16 @@ body {
     background-size: cover;
 }
 
+.btn-dark {
+    border-radius: 10px;
+}
+
+.tinyMario {
+    font-family: mario;
+    font-size: 15px;
+    -webkit-text-stroke: 1px black;
+}
+
 .headerMario {
     font-family: mario;
     font-size: 100px;

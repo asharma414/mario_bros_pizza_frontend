@@ -58,6 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
+    document.querySelector('.navbar-brand').appendChild(superMarioSpanGenerator('Mario Bros Pizza', 'tinyMario'))
+
     retrieveIngredientPrices()
     renderHome()
 })
@@ -105,7 +107,10 @@ const handleLogin = (e) => {
                     registerDiv().classList.add('d-none')
                     logoutDiv().classList.remove('d-none')
                     kartDiv().classList.remove('d-none')
-                    alert(`Welcome back, ${currentUser.name}`)
+                    let userSpan = document.createElement('span')
+                    userSpan.className = 'navbar-text'
+                    userSpan.innerText = `${currentUser.name}`
+                    document.querySelector('.navbar').appendChild(userSpan)
                 }
             })
     } else {
@@ -114,21 +119,22 @@ const handleLogin = (e) => {
 }
 
 function logout(e) {
-    alert(`Thank you for your business, ${currentUser.name}!`)
     currentUser = null;
     registerDiv().classList.remove('d-none')
     loginDiv().classList.remove('d-none')
     logoutDiv().classList.add('d-none')
     kartDiv().classList.add('d-none')
+    document.querySelector('.navbar-text').remove()
     renderHome()
 }
 
 const handleRegister = (e) => {
     e.preventDefault();
+    let address = e.target.address.value + ", " + e.target.city.value + ", " + e.target.state.value + " " + e.target.zip.value
     let body = {
         name: e.target.name.value,
         username: e.target.registerUsername.value,
-        address: e.target.address.value
+        address: address
     }
     fetch(`${baseURL}/customers`, {
         method: 'POST',
@@ -137,8 +143,16 @@ const handleRegister = (e) => {
     })
         .then(res => res.json())
         .then(data => {
-            alert(`Thank you for registering ${data.name}. Be sure to login with username "${data.username}" before you place an order!`)
-        })
+            if (data.errors) {
+                let key = Object.keys(data.errors)[0]
+                alert(data.errors[key])
+            } else {
+                alert(`Thank you for registering ${data.name}. Be sure to login with username "${data.username}" before you place an order!`)
+            }
+
+        }
+
+        )
 }
 
 //ORDER FORM
@@ -304,6 +318,7 @@ const renderCarouselImage = (spc) => {
 
     let para = document.createElement('p')
     let buyBtn = document.createElement('button')
+    buyBtn.className = 'btn-dark'
     buyBtn.setAttribute("data-target", "#pizzaOrderModal")
     buyBtn.setAttribute("data-toggle", "modal")
     buyBtn.setAttribute('data-button', 'special')
@@ -419,19 +434,19 @@ const renderCheckoutDetails = (data, sum) => {
 
 // :)
 
-function superMarioSpanGenerator(string) {
+function superMarioSpanGenerator(string, size='headerMario') {
     let returnDiv = document.createElement('div')
     let strAry = string.split('')
-    let colors = ['blueMario headerMario', 'greenMario headerMario', 'yellowMario headerMario', 'redMario headerMario']
+    let colors = ['blueMario ', 'greenMario ', 'yellowMario ', 'redMario ']
     let last
     strAry.forEach((let) => {
         spn = document.createElement('span')
         let index = Math.floor(Math.random() * colors.length);
         if (index === last) {
-            spn.className = colors[(index + 1) % 4]
+            spn.className = colors[(index + 1) % 4] + size
             last = (index + 1) % 4
         } else {
-            spn.className = colors[index]
+            spn.className = colors[index] + size
             last = index
         }
         spn.innerText = let
