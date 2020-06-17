@@ -109,7 +109,8 @@ const removeFromKart = (e) => {
         let price = parseFloat(document.querySelector('#total').innerText)
         price -= parseFloat(data.total_price)
         document.querySelector('#total').innerText = price
-        e.target.parentNode.remove()
+        //e.target.parentNode.remove()
+        fetchKartItems() //not a great solution, but it's honest.
     })
 }
 
