@@ -22,3 +22,8 @@ body {
 .navbar-brand {
     cursor: pointer;
 }
+
+.hover-pic {
+    height: 100px;
+    width: 100px;
+}

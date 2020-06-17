@@ -147,8 +147,7 @@ const handleRegister = (e) => {
 const updatePrice = (e) => {
     // debugger 
     if (orderForm().querySelector('.form-control').disabled == true ){
-        //apply special price instead
-        debugger    
+        //apply special price instead   
         let priceEl = document.getElementById('price')
         let price = selectedSpecialPrice
         let quantity = parseInt(document.getElementById('pizza-quantity-input').value)
@@ -223,6 +222,14 @@ function addCheckBoxes() {
                     divElement.className = "form-check form-check-inline"
                     inputElement.className = "form-check-input"
                     labelElement.className = 'form-check-label'
+                    labelElement.setAttribute('data-toggle', 'popover')
+                    labelElement.setAttribute('data-content', `<img class='hover-pic' src="${ing.picture}" />`)
+                    labelElement.setAttribute('data-trigger', 'hover')
+                    $(function () {
+                        $('[data-toggle="popover"]').popover({
+                            html: true
+                        })
+                    })
                     inputElement.type = "checkbox"
                     inputElement.id = `ingredientId-${ing.id}`
                     inputElement.setAttribute('data-category', ingredCat)
@@ -399,11 +406,13 @@ const handleCheckout = (e, orderAry, sum) => {
 }
 
 const renderCheckoutDetails = (data, sum) => {
+    let delivery_time = Math.ceil(parseFloat(data[0]))
+    let delivery_instructions = data[1].pop().delivery_instructions
     pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
     <h3 class="display-4">Thank you, ${currentUser.name}!</h3>
     <p class="lead">Your order total was $${sum}. Pizzas take about 25 minutes to prepare</p>
     <hr class="my-4 bg-white">
-    <p>The pizza will be delivered to ${currentUser.address} as per your address and instructions to "${data.pop().delivery_instructions}"</p>
+    <p>The pizza will be delivered to "${currentUser.address}" as per your address and instructions to "${delivery_instructions == "" ? "N/A" : delivery_instructions}". It will take ${delivery_time} minutes to deliver by bike.</p>
     </div>`
 }
 
