@@ -216,7 +216,7 @@ function addCheckBoxes() {
                 let categoryForm = document.querySelector(`#${ingredCat}-category`)
                 let filteredIngredientAry = ingredientAry.filter(i => i.category == ingredCat)
                 let legend = document.createElement('legend')
-                legend.innerText = ingredCat + 's'
+                legend.innerText = ingredCat.replace(ingredCat.charAt(0), ingredCat.charAt(0).toUpperCase()) + 's'
                 categoryForm.appendChild(legend)
                 filteredIngredientAry.forEach((ing) => {
                     let divElement = document.createElement("div")
@@ -226,7 +226,7 @@ function addCheckBoxes() {
                     inputElement.className = "form-check-input"
                     labelElement.className = 'form-check-label'
                     labelElement.setAttribute('data-toggle', 'popover')
-                    labelElement.setAttribute('data-content', `<img class='hover-pic' src="${ing.picture}" />`)
+                    labelElement.setAttribute('data-content', `<img class='hover-pic' src="${ing.picture}" /><p class='hover-desc'>${ing.description}</p>`)
                     labelElement.setAttribute('data-trigger', 'hover')
                     $(function () {
                         $('[data-toggle="popover"]').popover({

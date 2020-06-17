@@ -24,6 +24,12 @@ body {
 }
 
 .hover-pic {
+    border: solid black;
+    border-radius: 10px;
     height: 100px;
+    width: 100px;
+}
+
+.hover-desc {
     width: 100px;
 }
