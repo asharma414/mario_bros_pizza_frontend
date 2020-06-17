@@ -215,6 +215,9 @@ function addCheckBoxes() {
             ingredientCategories.forEach((ingredCat) => {
                 let categoryForm = document.querySelector(`#${ingredCat}-category`)
                 let filteredIngredientAry = ingredientAry.filter(i => i.category == ingredCat)
+                let legend = document.createElement('legend')
+                legend.innerText = ingredCat + 's'
+                categoryForm.appendChild(legend)
                 filteredIngredientAry.forEach((ing) => {
                     let divElement = document.createElement("div")
                     let inputElement = document.createElement("input")
