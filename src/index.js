@@ -104,6 +104,7 @@ const handleLogin = (e) => {
                 }
                 else {
                     loginForm().reset()
+                    $('#loginModal').modal('hide')
                     currentUser = data
                     loginDiv().classList.add('d-none')
                     registerDiv().classList.add('d-none')
