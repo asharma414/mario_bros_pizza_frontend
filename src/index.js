@@ -12,6 +12,7 @@ const loginForm = () => document.querySelector('#customer-login-form-modal')
 const registerForm = () => document.querySelector("#customer-register-form-modal")
 const registerDiv = () => document.querySelector('#register')
 const orderForm = () => document.querySelector('#pizza-order-form')
+const orderQty = () => document.querySelector("#pizza-quantity-input")
 
 const baseURL = "http://localhost:3000"
 const specialsURL = `${baseURL}/pizzas`
@@ -50,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = false)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = false)
         } else {
+            orderQty().value = 1;
             // document.getElementById('order-button').innerText = 'Place Special Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = true)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = true)
@@ -147,6 +149,8 @@ const handleRegister = (e) => {
                 let key = Object.keys(data.errors)[0]
                 alert(data.errors[key])
             } else {
+                registerForm().reset()
+                $('#registerModal').modal('hide')
                 alert(`Thank you for registering ${data.name}. Be sure to login with username "${data.username}" before you place an order!`)
             }
 
