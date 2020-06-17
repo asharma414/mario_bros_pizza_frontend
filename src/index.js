@@ -94,10 +94,10 @@ const handleLogin = (e) => {
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
-                    loginForm().reset()
                     alert(data.error)
                 }
                 else {
+                    loginForm().reset()
                     currentUser = data
                     loginDiv().classList.add('d-none')
                     registerDiv().classList.add('d-none')
