@@ -9,6 +9,11 @@ body {
     background-size: cover;
 }
 
+.gif {
+    display: block;
+    margin: auto;
+}
+
 .btn-dark {
     border-radius: 10px;
 }

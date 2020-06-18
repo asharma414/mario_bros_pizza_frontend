@@ -46,13 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (btnData == 'custom') {
             orderForm().reset()
+            //to ensure render logic is consistent
+            let emptyDiv = document.createElement('div')
+            pageBodyDiv().appendChild(emptyDiv)
             document.getElementById('price').innerText = "7.00"
-            // document.getElementById('order-button').innerText = 'Place Custom Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = false)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = false)
         } else {
             orderQty().value = 1;
-            // document.getElementById('order-button').innerText = 'Place Special Order'
             orderForm().querySelectorAll('.form-check-input').forEach(group => group.disabled = true)
             orderForm().querySelectorAll('.form-control').forEach(group => group.disabled = true)
             orderForm().querySelector('#pizza-quantity-input').disabled = false;
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //HOME PAGE
 
 const renderHome = () => {
+    inactivateNavItems()
     pageBodyDiv().innerHTML = ''
     let welcome = document.createElement('img')
     welcome.src = 'assets/welcomeMarioPizza.png'
@@ -360,10 +362,12 @@ function fetchKartItems(e) {
     user_id = currentUser.id
     fetch(`${orderURL}/${user_id}`)
         .then(res => res.json())
-        .then(handleKartView)
+        .then(data => handleKartView(e, data))
 }
 
-function handleKartView(orderAry) {
+function handleKartView(e, orderAry) {
+    inactivateNavItems()
+    e.target.parentNode.classList.add('active')
     if (orderAry.length > 0) {
         let sum = orderAry.reduce(function (a, b) {
             return a + parseFloat(b.total_price);
@@ -434,6 +438,7 @@ const renderCheckoutDetails = (data, sum) => {
     <p class="lead">Your order total was $${sum}. Pizzas take about 25 minutes to prepare</p>
     <hr class="my-4 bg-white">
     <p>The pizza will be delivered to "${currentUser.address}" as per your address and instructions to "${delivery_instructions == "" ? "N/A" : delivery_instructions}". It will take ${delivery_time} minutes to deliver by bike.</p>
+    <img class='gif' src='https://images.beano.com/store/a7b78530ef2b98ec0e2d3916270a6086b68d7a44097d08020828f8baa4e4?auto=compress&w=960&fit=max' />
     </div>`
 }
 
