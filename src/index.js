@@ -449,7 +449,7 @@ function superMarioSpanGenerator(string, size='headerMario') {
     let strAry = string.split('')
     let colors = ['blueMario ', 'greenMario ', 'yellowMario ', 'redMario ']
     let last
-    strAry.forEach((let) => {
+    strAry.forEach((letter) => {
         spn = document.createElement('span')
         let index = Math.floor(Math.random() * colors.length);
         if (index === last) {
@@ -459,7 +459,7 @@ function superMarioSpanGenerator(string, size='headerMario') {
             spn.className = colors[index] + size
             last = index
         }
-        spn.innerText = let
+        spn.innerText = letter
         returnDiv.appendChild(spn)
     })
     return returnDiv
