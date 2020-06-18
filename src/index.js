@@ -365,9 +365,11 @@ function fetchKartItems(e) {
         .then(data => handleKartView(e, data))
 }
 
-function handleKartView(e, orderAry) {
+function handleKartView(e=null, orderAry) {
     inactivateNavItems()
-    e.target.parentNode.classList.add('active')
+    if (e) {
+        e.target.parentNode.classList.add('active')
+    }
     if (orderAry.length > 0) {
         let sum = orderAry.reduce(function (a, b) {
             return a + parseFloat(b.total_price);
@@ -390,10 +392,10 @@ function handleKartView(e, orderAry) {
             removeButton.addEventListener('click', removeFromKart)
             let ingList = ord.pizza.ingredients.map(ing => ing.name).join(', ')
             if (ord.pizza.name) {
-                listEl.innerText = `${ord.quantity} x ${ord.pizza.name} which total(s) to $${parseFloat(ord.total_price).toFixed(2)} `
+                listEl.innerText = `${ord.quantity} x ${ord.pizza.name} pizza(s) - $${parseFloat(ord.total_price).toFixed(2)} `
                 listEl.appendChild(removeButton)
             } else {
-                listEl.innerText = `${ord.quantity} x custom pizza with ${ingList} which total(s) to $${parseFloat(ord.total_price).toFixed(2)} `
+                listEl.innerText = `${ord.quantity} x ${ord.pizza.size}, ${ord.pizza.cut} cut pizza(s) baked ${ord.pizza.bake} with ${ingList} - $${parseFloat(ord.total_price).toFixed(2)} `
                 listEl.appendChild(removeButton)
             }
             ordList.appendChild(listEl)
@@ -401,7 +403,6 @@ function handleKartView(e, orderAry) {
 
         pageBodyDiv().querySelector('#checkout').addEventListener('click', (e) => handleCheckout(e, orderAry, sum))
     } else {
-       
         pageBodyDiv().replaceChild(superMarioSpanGenerator("You have no items in your Kart!"), pageBodyDiv().firstChild)
     }
 }
@@ -415,7 +416,7 @@ const removeFromKart = (e) => {
         let price = parseFloat(document.querySelector('#total').innerText)
         price -= parseFloat(data.total_price)
         document.querySelector('#total').innerText = price
-        //e.target.parentNode.remove()
+        e.target.parentNode.remove()
         fetchKartItems() //not a great solution, but it's honest.
     })
 }
@@ -435,9 +436,9 @@ const renderCheckoutDetails = (data, sum) => {
     let delivery_instructions = data[1].pop().delivery_instructions
     pageBodyDiv().innerHTML = `<div class="jumbotron mt-4 bg-dark text-light">
     <h3 class="display-4">Thank you, ${currentUser.name}!</h3>
-    <p class="lead">Your order total was $${sum}. Pizzas take about 25 minutes to prepare</p>
+    <p class="lead">Your order total was $${sum}. Pizzas take about 25 minutes to prepare.</p>
     <hr class="my-4 bg-white">
-    <p>The pizza will be delivered to "${currentUser.address}" as per your address and instructions to "${delivery_instructions == "" ? "N/A" : delivery_instructions}". It will take ${delivery_time} minutes to deliver by bike.</p>
+    <p>The pizza will be delivered to "${currentUser.address}" as per your address and instructions to "${delivery_instructions == "" ? "N/A" : delivery_instructions}". Once prepped, delivery will take ${delivery_time} minutes by bike.</p>
     <img class='gif' src='https://images.beano.com/store/a7b78530ef2b98ec0e2d3916270a6086b68d7a44097d08020828f8baa4e4?auto=compress&w=960&fit=max' />
     </div>`
 }
